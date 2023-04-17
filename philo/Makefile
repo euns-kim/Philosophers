@@ -6,7 +6,7 @@
 #    By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/17 19:53:57 by eunskim           #+#    #+#              #
-#    Updated: 2023/04/17 20:07:58 by eunskim          ###   ########.fr        #
+#    Updated: 2023/04/17 21:17:29 by eunskim          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ HEADERS			:= -I $(INC_DIR)
 
 SRC_DIR			:= src
 SRCS			:= $(addprefix $(SRC_DIR)/, \
-				time.c)
+				time.c \
+				philo.c)
 OBJS			:= $(SRCS:.c=.o)
 
 #//= Make Rules =//#
