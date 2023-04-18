@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
+/*   data.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 20:41:15 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/17 21:30:21 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/18 16:29:34 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,61 +19,49 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
-int	main(int argc, char **argv)
+int	init_philo(t_philo *data, t_input set)
 {
-	t_philo			philo;
 	unsigned int	i;
 
-	if (argc < 5 || argc > 6)
-	{
-		write(1, "Invalid arguments.\n", 20);
-		return (1);
-	}
 	i = 0;
-	philo.num_philos = *argv[1];
-	philo.philos = malloc(philo.num_philos * sizeof(pthread_t));
-	if (philo.philos == NULL)
+	data->philos = malloc(set.num_philos * sizeof(pthread_t));
+	if (data->philos == NULL)
 	{
-		write(1, "Malloc failed.\n", 16);
+		printf("Malloc failed.\n");
 		return (1);
 	}
-	philo.philo_ids = malloc(philo.num_philos * sizeof(unsigned int));
-	if (philo.philo_ids == NULL)
+	while (i < set.num_philos)
 	{
-		free(philo.philos);
-		write(1, "Malloc failed.\n", 16);
-		return (1);
-	}
-	while (i < philo.num_philos)
-	{
-		philo.philo_ids[i] = i;
-		if (pthread_create(&philo.philos[i], NULL, routine, NULL) != 0)
+		if (pthread_create(&data->philos[i], NULL, routine, NULL) != 0)
 		{
-			free(philo.philos);
-			free(philo.philo_ids);
-			write(1, "Error occurred while creating threads.\n", 40);
+			free_before_terminating(data);
+			printf("Error occurred while creating threads.\n");
 			return (1);
 		}
 		i++;
 	}
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	t_philo			data;
+	t_input			set;
+	unsigned int	i;
+
 	i = 0;
-	while (i < philo.num_philos)
+	if (parse_input(argc, argv, &set) || init_philo(&data, set))
+		return (1);
+	while (i < set.num_philos)
 	{
-		if (pthread_join(philo.philos[i], NULL) != 0)
+		if (pthread_join(data.philos[i], NULL) != 0)
 		{
-			free(philo.philos);
-			free(philo.philo_ids);
-			write(1, "Error occurred while joining threads.\n", 39);
+			free_before_terminating(&data);
+			printf("Error occurred while joining threads.\n");
 			return (1);
 		}
 		i++;
 	}
-	write(1, "All philos spoke successfully.\n", 32);
-
-	struct timeval	tv;
-	gettimeofday(&tv, NULL);
-	long long timestamp = current_time_in_ms(tv);
-	printf("Current time in milliseconds: %lld\n", timestamp);
-
+	printf("All philos spoke successfully.\n");
 	return (0);
 }
