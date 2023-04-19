@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/19 22:44:48 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/19 22:47:52 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int				offer_forks(t_simulation *data, t_input set);
 void			philo_printer(t_philo *info);
 
 t_milliseconds	current_time_in_ms(void);
-t_milliseconds	time_past(t_simulation data);
+t_milliseconds	time_passed(t_simulation data);
 void			ms_sleep(t_milliseconds timeval);
 
 void			free_p(void *ptr);
