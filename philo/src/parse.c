@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 21:05:03 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/18 22:17:42 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/19 19:53:15 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	ft_isdigit(int c)
 	return (c >= '0' && c <= '9');
 }
 
-static int	get_value_ms(t_milliseconds *time, char *str)
+static int	get_value_ms(t_milliseconds *time, const char *str)
 {
 	*time = 0;
 	while (*str)
@@ -32,7 +32,7 @@ static int	get_value_ms(t_milliseconds *time, char *str)
 	return (0);
 }
 
-static int	get_value_uint(unsigned int *num, char *str)
+static int	get_value_uint(unsigned int *num, const char *str)
 {
 	*num = 0;
 	while (*str)
@@ -49,11 +49,6 @@ static int	get_value_uint(unsigned int *num, char *str)
 
 int	parse_input(int argc, char **argv, t_input *set)
 {
-	if (argc != 5 && argc != 6)
-	{
-		printf("Invalid arguments.");
-		return (1);
-	}
 	if (get_value_uint(&set->num_philos, argv[1]) \
 	|| get_value_ms(&set->time_to_die, argv[2]) \
 	|| get_value_ms(&set->time_to_eat, argv[3]) \
@@ -64,7 +59,7 @@ int	parse_input(int argc, char **argv, t_input *set)
 	}
 	if (set->num_philos == 0)
 	{
-		printf("Number of philosopher should be at least one.");
+		printf("Number of philosophers should be at least one.");
 		return (1);
 	}
 	set->num_mealtime = UINT_MAX;

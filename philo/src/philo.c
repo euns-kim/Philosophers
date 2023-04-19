@@ -12,6 +12,30 @@
 
 #include "philo.h"
 
+int	offer_forks(t_simulation *data, t_input set)
+{
+	unsigned int	i;
+
+	i = 0;
+	data->forks = malloc(set.num_philos * sizeof(pthread_mutex_t));
+	if (data->forks == NULL)
+	{
+		printf("Malloc failed.\n");
+		return (1);
+	}
+	while (i < set.num_philos)
+	{
+		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
+		{
+			free_before_terminating(data);
+			printf("Error occurred while creating mutexes.");
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 void	*routine(void *arg)
 {
 	(void) arg;
@@ -19,7 +43,7 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
-int	init_philo(t_philo *data, t_input set)
+int	create_philos(t_simulation *data, t_input set)
 {
 	unsigned int	i;
 
@@ -45,12 +69,18 @@ int	init_philo(t_philo *data, t_input set)
 
 int	main(int argc, char **argv)
 {
-	t_philo			data;
+	t_simulation	data;
 	t_input			set;
 	unsigned int	i;
 
 	i = 0;
-	if (parse_input(argc, argv, &set) || init_philo(&data, set))
+	if (argc != 5 && argc != 6)
+	{
+		printf("Invalid arguments.");
+		return (1);
+	}
+	if (parse_input(argc, argv, &set) || create_philos(&data, set) \
+	|| offer_forks(&data, set))
 		return (1);
 	while (i < set.num_philos)
 	{

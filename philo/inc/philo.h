@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/18 22:07:35 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/19 22:44:48 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,28 @@
 
 typedef unsigned long	t_milliseconds;
 
-typedef struct	s_philo
+typedef enum	e_routine
+{
+	GOT_FORKS,
+	THINKING,
+	EATING,
+	SLEEPING
+}	t_routine;
+
+typedef enum	e_state
+{
+	ALIVE,
+	DEAD
+}	t_state;
+
+typedef struct	s_simulation
 {
 	pthread_t		*philos;
-}	t_philo;
+	pthread_mutex_t	*forks;
+	t_milliseconds	start_time;
+	t_milliseconds	*last_mealtime;
+	pthread_mutex_t	*printer_mutex;
+}	t_simulation;
 
 typedef struct s_input
 {
@@ -37,11 +55,29 @@ typedef struct s_input
 	unsigned int	num_mealtime;
 }	t_input;
 
-int				parse_input(int argc, char **argv, t_input *set);
-int				init_philo(t_philo *data, t_input set);
+typedef struct	s_philo
+{
+	unsigned int	philo_id;
+	unsigned int	mealtime_cnt;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	t_state			being;
+	t_routine		act;
+	t_input			*set;
+	t_simulation	*data;
+}	t_philo;
+
+int				create_philos(t_simulation *data, t_input set);
 void			*routine(void *arg);
-void			free_before_terminating(t_philo *data);
-void			free_p(void *ptr);
+int				offer_forks(t_simulation *data, t_input set);
+
+void			philo_printer(t_philo *info);
+
 t_milliseconds	current_time_in_ms(void);
+t_milliseconds	time_past(t_simulation data);
+void			ms_sleep(t_milliseconds timeval);
+
+void			free_p(void *ptr);
+void			free_before_terminating(t_simulation *data);
 
 #endif
