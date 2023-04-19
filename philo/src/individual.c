@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/19 22:40:37 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/19 22:59:20 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,16 @@ void	philo_picking_up_forks(t_philo *info)
 	info->act = EATING;
 }
 
-void	individual_simulation(t_simulation *data, t_input *set, unsigned int philo_id)
+void	individual_simulation(t_simulation *data, t_input *set, unsigned int thread_idx)
 {
-	
+	t_philo	info;
+
+	info.philo_id = thread_idx + 1;
+	info.mealtime_cnt = 0;
+	info.right_fork = &data->forks[thread_idx];
+	info.left_fork = &data->forks[thread_idx + 1];
+	info.being = ALIVE;
+	info.act = THINKING;
+	info.data = data;
+	info.set = set;
 }

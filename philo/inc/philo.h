@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/19 22:47:52 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/19 22:59:07 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,12 @@ typedef struct	s_philo
 {
 	unsigned int	philo_id;
 	unsigned int	mealtime_cnt;
-	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*left_fork;
 	t_state			being;
 	t_routine		act;
-	t_input			*set;
 	t_simulation	*data;
+	t_input			*set;
 }	t_philo;
 
 int				create_philos(t_simulation *data, t_input set);
