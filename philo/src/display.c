@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:23:04 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/19 22:32:20 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/20 14:07:32 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	philo_printer(t_philo *info)
 {
-	pthread_mutex_lock(info->data->printer_mutex);
+	pthread_mutex_lock(info->data->print_lock);
 	printf("%lld", current_time_in_ms());
 	printf(" philosopher #%u ", info->philo_id);
 	if (info->being == DEAD)
@@ -30,5 +30,5 @@ void	philo_printer(t_philo *info)
 		else if (info->act == SLEEPING)
 			printf("is sleeping\n");
 	}
-	pthread_mutex_unlock(info->data->printer_mutex);
+	pthread_mutex_unlock(info->data->print_lock);
 }

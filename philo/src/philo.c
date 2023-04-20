@@ -12,18 +12,92 @@
 
 #include "philo.h"
 
-int	offer_forks(t_simulation *data, t_input set)
+int	philos_join(t_simulation *data)
 {
 	unsigned int	i;
 
 	i = 0;
-	data->forks = malloc(set.num_philos * sizeof(pthread_mutex_t));
+	while (i < data->set.num_philos)
+	{
+		if (pthread_join(data->philos[i], NULL) != 0)
+		{
+			free_before_terminating(data);
+			printf("Error occurred while joining threads.\n");
+			return (1);
+		}
+		i++;
+	}
+}
+
+void	*start_routine(void *data)
+{
+	(t_simulation *) data;
+	return (NULL);
+}
+
+int	init_mutexes(t_simulation *data)
+{
+	if (pthread_mutex_init(data->print_lock, NULL) != 0 \
+	|| pthread_mutex_init(data->exit_lock, NULL) != 0)
+	{
+		free_before_terminating(data);
+		printf("Error occurred while creating mutexes.");
+		return (1);
+	}
+}
+
+int	create_philos(t_simulation *data)
+{
+	unsigned int	i;
+
+	i = 0;
+	data->philos = malloc(data->set.num_philos * sizeof(pthread_t));
+	if (data->philos == NULL)
+	{
+		printf("Malloc failed.\n");
+		return (1);
+	}
+	while (i < data->set.num_philos)
+	{
+		data->thread_idx = i;
+		if (pthread_create(&data->philos[i], NULL, start_routine, (void *) data) != 0)
+		{
+			free_before_terminating(data);
+			printf("Error occurred while creating threads.\n");
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+
+
+		// t_philo	info;
+
+		// info.philo_id = thread_idx + 1;
+		// info.mealtime_cnt = 0;
+		// info.right_fork = &data->forks[thread_idx];
+		// info.left_fork = &data->forks[thread_idx + 1];
+		// info.being = ALIVE;
+		// info.act = THINKING;
+		// info.data = data;
+		// info.set = set;
+
+
+
+int	personification(t_simulation *data)
+{
+	unsigned int	i;
+
+	i = 0;
+	data->info = malloc(data->set.num_philos * sizeof(t_philo));
 	if (data->forks == NULL)
 	{
 		printf("Malloc failed.\n");
 		return (1);
 	}
-	while (i < set.num_philos)
+	while (i < data->set.num_philos)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
 		{
@@ -36,62 +110,24 @@ int	offer_forks(t_simulation *data, t_input set)
 	return (0);
 }
 
-void	*routine(void *arg)
-{
-	(void) arg;
-	printf("One of the philos said: I am philosopher.\n");
-	return (NULL);
-}
-
-int	create_philos(t_simulation *data, t_input set)
-{
-	unsigned int	i;
-
-	i = 0;
-	data->philos = malloc(set.num_philos * sizeof(pthread_t));
-	if (data->philos == NULL)
-	{
-		printf("Malloc failed.\n");
-		return (1);
-	}
-	while (i < set.num_philos)
-	{
-		if (pthread_create(&data->philos[i], NULL, routine, NULL) != 0)
-		{
-			free_before_terminating(data);
-			printf("Error occurred while creating threads.\n");
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
-
 int	main(int argc, char **argv)
 {
-	t_simulation	data;
-	t_input			set;
-	unsigned int	i;
+	t_simulation	*data;
 
-	i = 0;
 	if (argc != 5 && argc != 6)
 	{
 		printf("Invalid arguments.");
 		return (1);
 	}
-	if (parse_input(argc, argv, &set) || create_philos(&data, set) \
-	|| offer_forks(&data, set))
-		return (1);
-	while (i < set.num_philos)
+	data = calloc(1, sizeof(t_simulation));
+	if (data == NULL)
 	{
-		if (pthread_join(data.philos[i], NULL) != 0)
-		{
-			free_before_terminating(&data);
-			printf("Error occurred while joining threads.\n");
-			return (1);
-		}
-		i++;
+		printf("Malloc failed.\n");
+		return (1);
 	}
-	printf("All philos spoke successfully.\n");
+	if (parse_input(argc, argv, &data->set) || personification(data) \
+	|| create_philos(data) || init_mutexes(data) || philos_join(data))
+		return (1);
+	free_before_terminating(data);
 	return (0);
 }

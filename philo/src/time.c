@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:19:22 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/19 22:47:52 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/20 13:11:42 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,15 @@ t_milliseconds	current_time_in_ms(void)
 	return (timestamp);
 }
 
-t_milliseconds	time_passed(t_simulation data)
+t_milliseconds	time_passed(t_milliseconds start_time)
 {
-	return (current_time_in_ms() - data.start_time);
+	return (current_time_in_ms() - start_time);
 }
 
-void	ms_sleep(t_milliseconds timeval)
+void	sleep_exact(t_milliseconds timeval)
 {
-	usleep((useconds_t) 1000 * timeval);
+	t_milliseconds	start_time;
+
+	while (time_passed(start_time) <= timeval)
+		usleep(100);
 }
