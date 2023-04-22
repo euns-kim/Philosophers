@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/19 22:59:07 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/22 16:08:51 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,19 @@
 # include <stddef.h>
 # include <limits.h>
 
+# define NC "\e[0m"
+# define BLACK "\e[1;30m"
+# define RED "\e[1;31m"
+# define GREEN "\e[1;32m"
+# define BLUE "\e[1;34m"
+# define CYAN "\e[1;36m"
+
 typedef unsigned long	t_milliseconds;
 
 typedef enum	e_routine
 {
-	GOT_FORKS,
 	THINKING,
+	GOT_FORKS,
 	EATING,
 	SLEEPING
 }	t_routine;
@@ -34,16 +41,18 @@ typedef enum	e_routine
 typedef enum	e_state
 {
 	ALIVE,
-	DEAD
+	DEAD,
+	FINISHED
 }	t_state;
 
 typedef struct	s_simulation
 {
 	pthread_t		*philos;
-	pthread_mutex_t	*forks;
+	t_philo			*info;
 	t_milliseconds	start_time;
-	t_milliseconds	*last_mealtime;
-	pthread_mutex_t	*printer_mutex;
+	pthread_mutex_t	*print_lock;
+	pthread_mutex_t	*exit_lock;
+	t_input			set;
 }	t_simulation;
 
 typedef struct s_input
@@ -67,17 +76,23 @@ typedef struct	s_philo
 	t_input			*set;
 }	t_philo;
 
-int				create_philos(t_simulation *data, t_input set);
-void			*routine(void *arg);
-int				offer_forks(t_simulation *data, t_input set);
+int				parse_input(int argc, char **argv, t_input *set);
+
+int				personification(t_simulation *data);
+int				create_philos(t_simulation *data);
+int				init_mutexes(t_simulation *data);
+
+void			*start_routine(void *info);
 
 void			philo_printer(t_philo *info);
 
 t_milliseconds	current_time_in_ms(void);
-t_milliseconds	time_passed(t_simulation data);
-void			ms_sleep(t_milliseconds timeval);
+t_milliseconds	time_passed(t_milliseconds start_time);
+void			sleep_exact(t_milliseconds timeval);
 
 void			free_p(void *ptr);
 void			free_before_terminating(t_simulation *data);
+
+int				philos_join(t_simulation *data);
 
 #endif

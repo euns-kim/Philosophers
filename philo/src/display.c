@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:23:04 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/20 14:07:32 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/22 16:00:39 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,24 @@
 void	philo_printer(t_philo *info)
 {
 	pthread_mutex_lock(info->data->print_lock);
-	printf("%lld", current_time_in_ms());
-	printf(" philosopher #%u ", info->philo_id);
+	printf("%lld ", current_time_in_ms());
 	if (info->being == DEAD)
-		printf("died\n");
+		printf("%sphilosopher #%u died%s\n", \
+		RED, info->philo_id, NC);
 	else if (info->being == ALIVE)
-	{
-		if (info->act == GOT_FORKS)
-			printf("has taken a fork\n");
-		else if (info->act == THINKING)
-			printf("is thinking\n");
+	{	
+		if (info->act == THINKING)
+			printf("%sphilosopher #%u is thinking%s\n", \
+			GREEN, info->philo_id, NC);
+		else if (info->act == GOT_FORKS)
+			printf("%sphilosopher #%u has taken a fork%s\n", \
+			BLACK, info->philo_id, NC);
 		else if (info->act == EATING)
-			printf("is eating\n");
+			printf("%sphilosopher #%u is eating\n%s", \
+			CYAN, info->philo_id, NC);
 		else if (info->act == SLEEPING)
-			printf("is sleeping\n");
+			printf("%sphilosopher #%u is sleeping\n%s", \
+			BLUE, info->philo_id, NC);
 	}
 	pthread_mutex_unlock(info->data->print_lock);
 }
