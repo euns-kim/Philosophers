@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 15:38:42 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/22 16:11:56 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/22 18:03:20 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	free_before_terminating(t_simulation *data)
 	free_p(data->info);
 	free_p(data);
 }
-
 
 void	destroy_mutex(pthread_mutex_t *mtx)
 {

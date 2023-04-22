@@ -6,7 +6,7 @@
 #    By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/17 19:53:57 by eunskim           #+#    #+#              #
-#    Updated: 2023/04/20 13:46:59 by eunskim          ###   ########.fr        #
+#    Updated: 2023/04/22 18:04:07 by eunskim          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ SRCS			:= $(addprefix $(SRC_DIR)/, \
 				parse.c \
 				individual.c \
 				display.c \
-				monitor.c)
+				utils.c)
 OBJS			:= $(SRCS:.c=.o)
 
 #//= Make Rules =//#

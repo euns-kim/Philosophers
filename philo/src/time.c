@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:19:22 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/20 13:11:42 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/22 18:08:36 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	sleep_exact(t_milliseconds timeval)
 {
 	t_milliseconds	start_time;
 
+	start_time = current_time_in_ms();
 	while (time_passed(start_time) <= timeval)
 		usleep(100);
 }

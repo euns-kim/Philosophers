@@ -26,6 +26,7 @@ int	philos_join(t_simulation *data)
 		}
 		i++;
 	}
+	return (0);
 }
 
 int	init_mutexes(t_simulation *data)
@@ -36,6 +37,7 @@ int	init_mutexes(t_simulation *data)
 		printf("Error occurred while creating mutexes.");
 		return (1);
 	}
+	return (0);
 }
 
 int	create_philos(t_simulation *data)
@@ -52,7 +54,7 @@ int	create_philos(t_simulation *data)
 	while (i < data->set.num_philos)
 	{
 		if (pthread_create(&data->philos[i], NULL, \
-		start_routine, (void *) &data->info[i]) != 0)
+		start_routine, &data->info[i]) != 0)
 		{
 			printf("Error occurred while creating threads.\n");
 			return (1);
@@ -67,7 +69,7 @@ int	personification(t_simulation *data)
 	unsigned int	i;
 
 	i = 0;
-	data->info = ft_calloc(data->set.num_philos * sizeof(t_philo));
+	data->info = ft_calloc(data->set.num_philos, sizeof(t_philo));
 	if (data->info == NULL)
 	{
 		printf("Malloc failed.\n");
@@ -79,15 +81,15 @@ int	personification(t_simulation *data)
 		data->info[i].data = data;
 		data->info[i].set = &data->set;
 		if (i != 0)
-			data->info[i].right_fork = data->info[i - 1].left_fork;
-		if (pthread_mutex_init(data->info[i].left_fork, NULL) != 0)
+			data->info[i].right_fork = &data->info[i - 1].left_fork;
+		if (pthread_mutex_init(&data->info[i].left_fork, NULL) != 0)
 		{
 			printf("Error occurred while creating mutexes.");
 			return (1);
 		}
 		i++;
 	}
-	data->info[0].right_fork = data->info[i - 1].left_fork;
+	data->info[0].right_fork = &data->info[i - 1].left_fork;
 	return (0);
 }
 
