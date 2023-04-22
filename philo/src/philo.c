@@ -51,6 +51,7 @@ int	create_philos(t_simulation *data)
 		printf("Malloc failed.\n");
 		return (1);
 	}
+	data->start_time = current_time_in_ms();
 	while (i < data->set.num_philos)
 	{
 		if (pthread_create(&data->philos[i], NULL, \
