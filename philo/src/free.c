@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 15:38:42 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/22 18:03:20 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/22 18:40:59 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void	free_before_terminating(t_simulation *data)
 	{
 		while (i < data->set.num_philos)
 		{
-			destroy_mutex(data->info[i].left_fork);
+			destroy_mutex(&data->info[i].left_fork);
 		}
 		i++;		
 	}
-	destroy_mutex(data->print_lock);
-	destroy_mutex(data->exit_lock);
+	destroy_mutex(&data->print_lock);
+	destroy_mutex(&data->exit_lock);
 	free_p(data->philos);
 	free_p(data->info);
 	free_p(data);

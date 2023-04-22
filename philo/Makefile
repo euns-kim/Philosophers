@@ -6,7 +6,7 @@
 #    By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/17 19:53:57 by eunskim           #+#    #+#              #
-#    Updated: 2023/04/22 18:04:07 by eunskim          ###   ########.fr        #
+#    Updated: 2023/04/22 18:35:52 by eunskim          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ RESET	:= \033[0m
 
 #//= Mandatory part =//#
 NAME 			:= philo
-CFLAGS 			:= -Wextra -Wall -Werror -pthread -fsanitize=thread -g
+CFLAGS 			:= -Wextra -Wall -Werror -fsanitize=thread -g
 # -fsanitize=address -g3
 
 INC_DIR			:= inc

@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/22 18:31:36 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/22 18:40:29 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,10 @@ typedef struct	s_simulation
 	pthread_t		*philos;
 	t_philo			*info;
 	t_milliseconds	start_time;
-	pthread_mutex_t	*print_lock;
-	pthread_mutex_t	*exit_lock;
+	pthread_mutex_t	print_lock;
+	pthread_mutex_t	exit_lock;
 	t_input			set;
 }	t_simulation;
-
-
 
 int				parse_input(int argc, char **argv, t_input *set);
 

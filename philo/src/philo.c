@@ -31,8 +31,8 @@ int	philos_join(t_simulation *data)
 
 int	init_mutexes(t_simulation *data)
 {
-	if (pthread_mutex_init(data->print_lock, NULL) != 0 \
-	|| pthread_mutex_init(data->exit_lock, NULL) != 0)
+	if (pthread_mutex_init(&data->print_lock, NULL) != 0 \
+	|| pthread_mutex_init(&data->exit_lock, NULL) != 0)
 	{
 		printf("Error occurred while creating mutexes.");
 		return (1);
