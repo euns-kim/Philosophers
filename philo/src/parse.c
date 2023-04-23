@@ -6,18 +6,13 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 21:05:03 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/19 19:53:15 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/23 17:49:31 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	ft_isdigit(int c)
-{
-	return (c >= '0' && c <= '9');
-}
-
-static int	get_value_ms(t_milliseconds *time, const char *str)
+int	get_value_ms(t_milliseconds *time, const char *str)
 {
 	*time = 0;
 	while (*str)
@@ -32,7 +27,7 @@ static int	get_value_ms(t_milliseconds *time, const char *str)
 	return (0);
 }
 
-static int	get_value_uint(unsigned int *num, const char *str)
+int	get_value_uint(unsigned int *num, const char *str)
 {
 	*num = 0;
 	while (*str)

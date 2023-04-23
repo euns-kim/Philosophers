@@ -12,23 +12,6 @@
 
 #include "philo.h"
 
-int	philos_join(t_simulation *data)
-{
-	unsigned int	i;
-
-	i = 0;
-	while (i < data->set.num_philos)
-	{
-		if (pthread_join(data->philos[i], NULL) != 0)
-		{
-			printf("Error occurred while joining threads.\n");
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
-
 int	create_philos(t_simulation *data)
 {
 	unsigned int	i;
@@ -51,8 +34,8 @@ int	create_philos(t_simulation *data)
 		}
 		i++;
 	}
+	data->start_time = current_time_in_ms();
 	pthread_mutex_unlock(&data->start_lock);
-	data->start_time = current_time_in_ms(); // where?
 	return (0);
 }
 
@@ -113,7 +96,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	if (parse_input(argc, argv, &data->set) || init_mutexes(data) \
-	|| personification(data) || create_philos(data) || philos_join(data))
+	|| personification(data) || create_philos(data) || reaper(data))
 	{
 		free_before_terminating(data);
 		return (1);

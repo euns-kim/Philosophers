@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/23 15:26:59 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/23 17:54:33 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,10 @@ void	philo_eating(t_philo *info)
 {
 	info->act = EATING;
 	philo_printer(info);
-	info->mealtime_cnt++;
 	info->death_time = current_time_in_ms() + info->set->time_to_die;
+	info->mealtime_cnt++;
+	if (info->mealtime_cnt >= info->set->num_mealtime)
+		info->being = FINISHED;
 	sleep_exact(info->set->time_to_eat);
 }
 
@@ -48,19 +50,27 @@ void	philo_picking_up_forks(t_philo *info)
 {
 	if (info->philo_id % 2 == 1)
 	{
-		pthread_mutex_lock(&info->left_fork);
-		info->act = GOT_FORKS;
-		philo_printer(info);
-		pthread_mutex_lock(info->right_fork);
+		while (pthread_mutex_lock(&info->left_fork) == 0)
+		{
+			if (pthread_mutex_lock(info->right_fork) != 0)
+				pthread_mutex_unlock(&info->left_fork);
+			else
+				break;
+		}
 	}
 	else
 	{
-		pthread_mutex_lock(info->right_fork);
-		info->act = GOT_FORKS;
-		philo_printer(info);
-		pthread_mutex_lock(&info->left_fork);
+		while (pthread_mutex_lock(info->right_fork) == 0)
+		{
+			if (pthread_mutex_lock(&info->left_fork) != 0)
+				pthread_mutex_unlock(info->right_fork);
+			else
+				break;
+		}
 	}
-
+	info->act = GOT_FORKS;
+	philo_printer(info);
+	philo_printer(info);
 }
 
 void	*start_routine(void *arg)

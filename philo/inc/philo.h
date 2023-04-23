@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/23 15:38:34 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/23 20:26:59 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stddef.h>
+# include <stdbool.h>
 # include <limits.h>
 
 typedef unsigned long	t_milliseconds;
@@ -38,6 +39,15 @@ typedef enum	e_state
 	FINISHED
 }	t_state;
 
+eum e_simul
+{
+	not_started,
+	start,
+	exit
+}
+
+typedef struct s_simulation	t_simulation;
+
 typedef struct s_input
 {
 	unsigned int	num_philos;
@@ -46,8 +56,6 @@ typedef struct s_input
 	t_milliseconds	time_to_sleep;
 	unsigned int	num_mealtime;
 }	t_input;
-
-typedef struct s_simulation	t_simulation;
 
 typedef struct	s_philo
 {
@@ -60,6 +68,7 @@ typedef struct	s_philo
 	t_routine		act;
 	t_simulation	*data;
 	t_input			*set;
+
 }	t_philo;
 
 typedef struct	s_simulation
@@ -70,10 +79,13 @@ typedef struct	s_simulation
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	start_lock;
 	pthread_mutex_t	exit_lock;
+	bool			*running;
 	t_input			set;
 }	t_simulation;
 
 int				parse_input(int argc, char **argv, t_input *set);
+int				get_value_uint(unsigned int *num, const char *str);
+int				get_value_ms(t_milliseconds *time, const char *str);
 
 int				personification(t_simulation *data);
 int				create_philos(t_simulation *data);
@@ -95,9 +107,14 @@ void			free_p(void *ptr);
 void			destroy_mutex(pthread_mutex_t *mtx);
 void			free_before_terminating(t_simulation *data);
 
+int				reaper(t_simulation *data);
+void			check_if_dead(t_simulation *data);
+void			check_if_finished(t_simulation *data);
+
 int				philos_join(t_simulation *data);
 
 void			*ft_memset(void *b, int c, size_t len);
 void			*ft_calloc(size_t count, size_t size);
+int				ft_isdigit(int c);
 
 #endif

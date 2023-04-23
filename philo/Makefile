@@ -6,7 +6,7 @@
 #    By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/17 19:53:57 by eunskim           #+#    #+#              #
-#    Updated: 2023/04/23 15:23:39 by eunskim          ###   ########.fr        #
+#    Updated: 2023/04/23 20:22:12 by eunskim          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,22 +24,22 @@ RESET	:= \033[0m
 
 #//= Mandatory part =//#
 NAME 			:= philo
-CFLAGS 			:= -Wextra -Wall -Werror
-# -fsanitize=thread -g
-# -fsanitize=address -g3
+CFLAGS 			:= -Wextra -Wall -Werror -fsanitize=thread -g
+# -fsanitize=address -g3 
 
 INC_DIR			:= inc
 HEADERS			:= -I $(INC_DIR)
 
 SRC_DIR			:= src
 SRCS			:= $(addprefix $(SRC_DIR)/, \
-				time.c \
 				philo.c \
-				free.c \
 				parse.c \
 				individual.c \
+				time.c \
+				display.c \
 				utils.c \
-				display.c)
+				reaper.c \
+				free.c)
 OBJS			:= $(SRCS:.c=.o)
 
 #//= Make Rules =//#
