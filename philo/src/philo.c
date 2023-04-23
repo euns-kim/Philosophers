@@ -29,17 +29,6 @@ int	philos_join(t_simulation *data)
 	return (0);
 }
 
-int	init_mutexes(t_simulation *data)
-{
-	if (pthread_mutex_init(&data->print_lock, NULL) != 0 \
-	|| pthread_mutex_init(&data->exit_lock, NULL) != 0)
-	{
-		printf("Error occurred while creating mutexes.");
-		return (1);
-	}
-	return (0);
-}
-
 int	create_philos(t_simulation *data)
 {
 	unsigned int	i;
@@ -51,7 +40,7 @@ int	create_philos(t_simulation *data)
 		printf("Malloc failed.\n");
 		return (1);
 	}
-	data->start_time = current_time_in_ms();
+	pthread_mutex_lock(&data->start_lock);
 	while (i < data->set.num_philos)
 	{
 		if (pthread_create(&data->philos[i], NULL, \
@@ -62,6 +51,8 @@ int	create_philos(t_simulation *data)
 		}
 		i++;
 	}
+	pthread_mutex_unlock(&data->start_lock);
+	data->start_time = current_time_in_ms(); // where?
 	return (0);
 }
 
@@ -94,6 +85,18 @@ int	personification(t_simulation *data)
 	return (0);
 }
 
+int	init_mutexes(t_simulation *data)
+{
+	if (pthread_mutex_init(&data->print_lock, NULL) != 0 \
+	|| pthread_mutex_init(&data->start_lock, NULL) != 0 \
+	|| pthread_mutex_init(&data->exit_lock, NULL) != 0)
+	{
+		printf("Error occurred while creating mutexes.");
+		return (1);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_simulation	*data;
@@ -109,8 +112,8 @@ int	main(int argc, char **argv)
 		printf("Malloc failed.\n");
 		return (1);
 	}
-	if (parse_input(argc, argv, &data->set) || personification(data) \
-	|| create_philos(data) || init_mutexes(data) || philos_join(data))
+	if (parse_input(argc, argv, &data->set) || init_mutexes(data) \
+	|| personification(data) || create_philos(data) || philos_join(data))
 	{
 		free_before_terminating(data);
 		return (1);
