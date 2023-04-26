@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/23 19:59:17 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/26 19:43:36 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@ int	philos_join(t_simulation *data)
 		i++;
 	}
 	return (0);
+}
+
+void	reaper_helper(t_philo *info)
+{
+	pthread_mutex_lock(&info->data->exit_lock);
+	if (info->data->running == false)
+		info->being = DEAD;
+	pthread_mutex_unlock(&info->data->exit_lock);
 }
 
 void	check_if_finished(t_simulation *data)
@@ -72,10 +80,9 @@ void	check_if_dead(t_simulation *data)
 
 int	reaper(t_simulation *data)
 {
-	bool	running;
-
-	running = true;
-	data->running = &running;
+	pthread_mutex_lock(&data->exit_lock);
+	data->running = true;
+	pthread_mutex_unlock(&data->exit_lock);
 	while (data->running)
 	{
 		check_if_dead(data);
@@ -83,7 +90,5 @@ int	reaper(t_simulation *data)
 			break ;
 		check_if_finished(data);
 	}
-	if (philos_join(data))
-		return (1);
 	return (0);	
 }

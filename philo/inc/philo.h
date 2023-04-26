@@ -6,21 +6,20 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/23 20:26:59 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/26 19:02:23 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <sys/time.h>
-# include <stdio.h>
-# include <pthread.h>
-# include <stdlib.h>
 # include <unistd.h>
-# include <stddef.h>
+# include <stdio.h>
+# include <stdlib.h>
 # include <stdbool.h>
+# include <pthread.h>
 # include <limits.h>
+# include <sys/time.h>
 
 typedef unsigned long	t_milliseconds;
 
@@ -38,13 +37,6 @@ typedef enum	e_state
 	DEAD,
 	FINISHED
 }	t_state;
-
-eum e_simul
-{
-	not_started,
-	start,
-	exit
-}
 
 typedef struct s_simulation	t_simulation;
 
@@ -68,7 +60,6 @@ typedef struct	s_philo
 	t_routine		act;
 	t_simulation	*data;
 	t_input			*set;
-
 }	t_philo;
 
 typedef struct	s_simulation
@@ -79,7 +70,8 @@ typedef struct	s_simulation
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	start_lock;
 	pthread_mutex_t	exit_lock;
-	bool			*running;
+	bool			start;
+	bool			running;
 	t_input			set;
 }	t_simulation;
 
@@ -104,12 +96,15 @@ t_milliseconds	time_passed(t_milliseconds start_time);
 void			sleep_exact(t_milliseconds timeval);
 
 void			free_p(void *ptr);
-void			destroy_mutex(pthread_mutex_t *mtx);
+void			destroy_forks(t_simulation *data, unsigned int i);
+void			destroy_mutexes(t_simulation *data);
+void			free_pointers(t_simulation *data);
 void			free_before_terminating(t_simulation *data);
 
 int				reaper(t_simulation *data);
 void			check_if_dead(t_simulation *data);
 void			check_if_finished(t_simulation *data);
+void			reaper_helper(t_philo *info);
 
 int				philos_join(t_simulation *data);
 

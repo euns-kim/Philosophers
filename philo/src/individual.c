@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/23 17:54:33 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/26 19:01:57 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ void	philo_sleeping_thinking(t_philo *info)
 	info->act = SLEEPING;
 	philo_printer(info);
 	sleep_exact(info->set->time_to_sleep);
+	reaper_helper(info);
 	info->act = THINKING;
 	philo_printer(info);
+	reaper_helper(info);
 }
 
 void	philo_putting_down_forks(t_philo *info)
@@ -33,6 +35,7 @@ void	philo_putting_down_forks(t_philo *info)
 		pthread_mutex_unlock(info->right_fork);
 		pthread_mutex_unlock(&info->left_fork);
 	}
+	reaper_helper(info);
 }
 
 void	philo_eating(t_philo *info)
@@ -71,6 +74,7 @@ void	philo_picking_up_forks(t_philo *info)
 	info->act = GOT_FORKS;
 	philo_printer(info);
 	philo_printer(info);
+	reaper_helper(info);
 }
 
 void	*start_routine(void *arg)
@@ -79,6 +83,12 @@ void	*start_routine(void *arg)
 
 	info = (t_philo *) arg;
 	pthread_mutex_lock(&info->data->start_lock);
+	if (info->data->start == false)
+	{
+		pthread_mutex_unlock(&info->data->start_lock);
+		return (NULL);
+	}
+	info->death_time = info->data->start_time + info->set->time_to_die;
 	pthread_mutex_unlock(&info->data->start_lock);
 	if (info->philo_id % 2 == 1)
 		sleep_exact(5);

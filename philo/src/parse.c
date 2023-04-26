@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 21:05:03 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/23 17:49:31 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/24 14:55:56 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 int	get_value_ms(t_milliseconds *time, const char *str)
 {
 	*time = 0;
+	if (*str == '\0')
+		return (1);
 	while (*str)
 	{
 		if (ft_isdigit(*str) == 0)
@@ -30,6 +32,8 @@ int	get_value_ms(t_milliseconds *time, const char *str)
 int	get_value_uint(unsigned int *num, const char *str)
 {
 	*num = 0;
+	if (*str == '\0')
+		return (1);
 	while (*str)
 	{
 		if (ft_isdigit(*str) == 0)

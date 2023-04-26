@@ -30,12 +30,17 @@ int	create_philos(t_simulation *data)
 		start_routine, &data->info[i]) != 0)
 		{
 			printf("Error occurred while creating threads.\n");
+			pthread_mutex_unlock(&data->start_lock);
 			return (1);
 		}
 		i++;
 	}
+	data->start = true;
 	data->start_time = current_time_in_ms();
 	pthread_mutex_unlock(&data->start_lock);
+	pthread_mutex_lock(&data->exit_lock);
+		data->running = true;
+	pthread_mutex_unlock(&data->exit_lock);
 	return (0);
 }
 
@@ -60,7 +65,7 @@ int	personification(t_simulation *data)
 		if (pthread_mutex_init(&data->info[i].left_fork, NULL) != 0)
 		{
 			printf("Error occurred while creating mutexes.");
-			return (1);
+			return (destroy_forks(data, i), 1);
 		}
 		i++;
 	}
@@ -70,11 +75,22 @@ int	personification(t_simulation *data)
 
 int	init_mutexes(t_simulation *data)
 {
-	if (pthread_mutex_init(&data->print_lock, NULL) != 0 \
-	|| pthread_mutex_init(&data->start_lock, NULL) != 0 \
-	|| pthread_mutex_init(&data->exit_lock, NULL) != 0)
+	if (pthread_mutex_init(&data->print_lock, NULL) != 0)
 	{
 		printf("Error occurred while creating mutexes.");
+		return (1);
+	}
+	if (pthread_mutex_init(&data->start_lock, NULL) != 0)
+	{
+		printf("Error occurred while creating mutexes.");
+		pthread_mutex_destroy(&data->print_lock);
+		return (1);
+	}
+	if (pthread_mutex_init(&data->exit_lock, NULL) != 0)
+	{
+		printf("Error occurred while creating mutexes.");
+		pthread_mutex_destroy(&data->print_lock);
+		pthread_mutex_destroy(&data->start_lock);
 		return (1);
 	}
 	return (0);
@@ -85,22 +101,15 @@ int	main(int argc, char **argv)
 	t_simulation	*data;
 
 	if (argc != 5 && argc != 6)
-	{
-		printf("Invalid arguments.");
-		return (1);
-	}
+		return (printf("Invalid arguments."), 1);
 	data = ft_calloc(1, sizeof(t_simulation));
 	if (data == NULL)
-	{
-		printf("Malloc failed.\n");
-		return (1);
-	}
-	if (parse_input(argc, argv, &data->set) || init_mutexes(data) \
-	|| personification(data) || create_philos(data) || reaper(data))
-	{
-		free_before_terminating(data);
-		return (1);
-	}
-	free_before_terminating(data);
-	return (0);
+		return (printf("Malloc failed.\n"), 1);
+	if (parse_input(argc, argv, &data->set) || init_mutexes(data))
+		return (free(data), 1);
+	if (personification(data))
+		return (destroy_mutexes(data), free_pointers(data), 1);
+	if (create_philos(data) || reaper(data) || philos_join(data))
+		return (free_before_terminating(data), 1);
+	return (free_before_terminating(data), 0);
 }
