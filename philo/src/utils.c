@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 14:01:39 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/23 17:49:39 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/28 16:39:19 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,10 @@ void	*ft_memset(void *b, int c, size_t len)
 int	ft_isdigit(int c)
 {
 	return (c >= '0' && c <= '9');
+}
+
+void	free_p(void *ptr)
+{
+	if (ptr)
+		free(ptr);
 }

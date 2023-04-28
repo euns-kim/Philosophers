@@ -38,10 +38,7 @@ int	create_philos(t_simulation *data)
 	data->start = true;
 	data->start_time = current_time_in_ms();
 	pthread_mutex_unlock(&data->start_lock);
-	pthread_mutex_lock(&data->exit_lock);
-		data->running = true;
-	pthread_mutex_unlock(&data->exit_lock);
-	return (0);
+	return (philos_join(data));
 }
 
 int	personification(t_simulation *data)
@@ -49,23 +46,23 @@ int	personification(t_simulation *data)
 	unsigned int	i;
 
 	i = 0;
-	data->info = ft_calloc(data->set.num_philos, sizeof(t_philo));
-	if (data->info == NULL)
-	{
-		printf("Malloc failed.\n");
-		return (1);
-	}
 	while (i < data->set.num_philos)
 	{
 		data->info[i].philo_id = i + 1;
 		data->info[i].data = data;
-		data->info[i].set = &data->set;
+		data->info[i].set = data->set;
 		if (i != 0)
 			data->info[i].right_fork = &data->info[i - 1].left_fork;
 		if (pthread_mutex_init(&data->info[i].left_fork, NULL) != 0)
 		{
-			printf("Error occurred while creating mutexes.");
-			return (destroy_forks(data, i), 1);
+			destroy_forks(data, i);
+			return (printf("Error occurred while creating mutexes."), 1);
+		}
+		if (pthread_mutex_init(&data->info[i].last_meal_lock, NULL) != 0)
+		{
+			destroy_forks(data, i + 1);
+			destroy_last_meal_locks(data, i);
+			return (printf("Error occurred while creating mutexes."), 1);
 		}
 		i++;
 	}
@@ -105,11 +102,14 @@ int	main(int argc, char **argv)
 	data = ft_calloc(1, sizeof(t_simulation));
 	if (data == NULL)
 		return (printf("Malloc failed.\n"), 1);
+	data->info = ft_calloc(data->set.num_philos, sizeof(t_philo));
+	if (data->info == NULL)
+		return (printf("Malloc failed.\n"), free(data), 1);
 	if (parse_input(argc, argv, &data->set) || init_mutexes(data))
-		return (free(data), 1);
+		return (free(data), free(data->info), 1);
 	if (personification(data))
 		return (destroy_mutexes(data), free_pointers(data), 1);
-	if (create_philos(data) || reaper(data) || philos_join(data))
+	if (create_philos(data) || reaper(data))
 		return (free_before_terminating(data), 1);
 	return (free_before_terminating(data), 0);
 }

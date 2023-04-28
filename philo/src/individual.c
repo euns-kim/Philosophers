@@ -6,21 +6,25 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/26 19:01:57 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/28 20:42:00 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_sleeping_thinking(t_philo *info)
+void	philo_thinking(t_philo *info)
+{
+	info->act = THINKING;
+	philo_printer(info);
+	info->action = &philo_eating;
+}
+
+void	philo_sleeping(t_philo *info)
 {
 	info->act = SLEEPING;
 	philo_printer(info);
-	sleep_exact(info->set->time_to_sleep);
-	reaper_helper(info);
-	info->act = THINKING;
-	philo_printer(info);
-	reaper_helper(info);
+	sleep_exact(info->set.time_to_sleep);
+	info->action = &philo_thinking;
 }
 
 void	philo_putting_down_forks(t_philo *info)
@@ -35,46 +39,57 @@ void	philo_putting_down_forks(t_philo *info)
 		pthread_mutex_unlock(info->right_fork);
 		pthread_mutex_unlock(&info->left_fork);
 	}
-	reaper_helper(info);
 }
 
 void	philo_eating(t_philo *info)
 {
 	info->act = EATING;
 	philo_printer(info);
-	info->death_time = current_time_in_ms() + info->set->time_to_die;
+	pthread_mutex_lock(&info->last_meal_lock);
+	info->last_meal = current_time_in_ms();
+	pthread_mutex_unlock(&info->last_meal_lock);
 	info->mealtime_cnt++;
-	if (info->mealtime_cnt >= info->set->num_mealtime)
+	if (info->mealtime_cnt == info->set.num_mealtime)
 		info->being = FINISHED;
-	sleep_exact(info->set->time_to_eat);
+	sleep_exact(info->set.time_to_eat);
+	philo_putting_down_forks(info);
+	info->action = &philo_sleeping;
 }
 
 void	philo_picking_up_forks(t_philo *info)
 {
 	if (info->philo_id % 2 == 1)
 	{
-		while (pthread_mutex_lock(&info->left_fork) == 0)
-		{
-			if (pthread_mutex_lock(info->right_fork) != 0)
-				pthread_mutex_unlock(&info->left_fork);
-			else
-				break;
-		}
+		pthread_mutex_lock(&info->left_fork);
+		pthread_mutex_lock(info->right_fork);
 	}
 	else
 	{
-		while (pthread_mutex_lock(info->right_fork) == 0)
-		{
-			if (pthread_mutex_lock(&info->left_fork) != 0)
-				pthread_mutex_unlock(info->right_fork);
-			else
-				break;
-		}
+		pthread_mutex_lock(info->right_fork);
+		pthread_mutex_lock(&info->left_fork);
 	}
 	info->act = GOT_FORKS;
 	philo_printer(info);
 	philo_printer(info);
-	reaper_helper(info);
+	info->action = &philo_eating;
+}
+
+void	routine(t_philo *info)
+{
+	while (info->being == ALIVE)
+	{
+		pthread_mutex_lock(&info->data->exit_lock);
+		if (info->data->exit == true)
+		{
+			if (info->action == &philo_eating)
+				philo_putting_down_forks(info);
+			info->being = DEAD;
+			pthread_mutex_unlock(&info->data->exit_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&info->data->exit_lock);
+		info->action(info);
+	}
 }
 
 void	*start_routine(void *arg)
@@ -84,20 +99,14 @@ void	*start_routine(void *arg)
 	info = (t_philo *) arg;
 	pthread_mutex_lock(&info->data->start_lock);
 	if (info->data->start == false)
-	{
-		pthread_mutex_unlock(&info->data->start_lock);
-		return (NULL);
-	}
-	info->death_time = info->data->start_time + info->set->time_to_die;
+		return (pthread_mutex_unlock(&info->data->start_lock), NULL);
 	pthread_mutex_unlock(&info->data->start_lock);
+	pthread_mutex_lock(&info->last_meal_lock);
+	info->last_meal = info->data->start_time;
+	pthread_mutex_unlock(&info->last_meal_lock);
+	info->action = &philo_picking_up_forks;
 	if (info->philo_id % 2 == 1)
-		sleep_exact(5);
-	while (info->being == ALIVE)
-	{
-		philo_picking_up_forks(info);
-		philo_eating(info);
-		philo_putting_down_forks(info);
-		philo_sleeping_thinking(info);
-	}
+		sleep_exact(info->set.time_to_eat / 2);
+	routine(info);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/26 19:43:36 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/28 20:51:21 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 int	philos_join(t_simulation *data)
 {
 	unsigned int	i;
+	unsigned int	finish_cnt;
 
 	i = 0;
+	finish_cnt = 0;
 	while (i < data->set.num_philos)
 	{
 		if (pthread_join(data->philos[i], NULL) != 0)
@@ -24,39 +26,13 @@ int	philos_join(t_simulation *data)
 			printf("Error occurred while joining threads.\n");
 			return (1);
 		}
-		i++;
-	}
-	return (0);
-}
-
-void	reaper_helper(t_philo *info)
-{
-	pthread_mutex_lock(&info->data->exit_lock);
-	if (info->data->running == false)
-		info->being = DEAD;
-	pthread_mutex_unlock(&info->data->exit_lock);
-}
-
-void	check_if_finished(t_simulation *data)
-{
-	unsigned int	i;
-	unsigned int	finished_cnt;
-
-	i = 0;
-	finished_cnt = 0;
-	while (i < data->set.num_philos)
-	{
 		if (data->info[i].being == FINISHED)
-			finished_cnt++;
+			finish_cnt += 1;
 		i++;
 	}
-	if (finished_cnt == data->set.num_philos)
-	{
-		pthread_mutex_lock(&data->print_lock);
-		printf("Simulation finished\n");
-		pthread_mutex_unlock(&data->print_lock);
+	if (finish_cnt == data->set.num_mealtime)
 		data->running = false;
-	}
+	return (0);
 }
 
 void	check_if_dead(t_simulation *data)
@@ -66,29 +42,30 @@ void	check_if_dead(t_simulation *data)
 	i = 0;
 	while (i < data->set.num_philos)
 	{
-		if (data->info[i].death_time != 0 \
-		&& data->info[i].death_time <= current_time_in_ms())
+		pthread_mutex_lock(&data->info[i].last_meal_lock);
+		if (data->info[i].last_meal != 0 \
+		&& (current_time_in_ms() - data->info[i].last_meal >= data->set.time_to_die))
 		{
-			data->info[i].being = DEAD;
-			philo_printer(&data->info[i]);
+			pthread_mutex_lock(&data->exit_lock);
+			data->exit = true;
+			pthread_mutex_unlock(&data->exit_lock);
+			pthread_mutex_lock(&data->print_lock);
+			printf("%lu %u died", time_passed(data->start_time), \
+			data->info[i].philo_id);
+			pthread_mutex_unlock(&data->print_lock);
 			data->running = false;
+			pthread_mutex_unlock(&data->info[i].last_meal_lock);
 			break ;
 		}
+		pthread_mutex_unlock(&data->info[i].last_meal_lock);
 		i++;
 	}
 }
 
 int	reaper(t_simulation *data)
 {
-	pthread_mutex_lock(&data->exit_lock);
 	data->running = true;
-	pthread_mutex_unlock(&data->exit_lock);
 	while (data->running)
-	{
 		check_if_dead(data);
-		if (data->running == false)
-			break ;
-		check_if_finished(data);
-	}
-	return (0);	
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 15:38:42 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/26 18:00:32 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/28 16:42:09 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	free_before_terminating(t_simulation *data)
 {
 	destroy_forks(data, data->set.num_philos);
+	destroy_last_meal_locks(data, data->set.num_philos);
 	destroy_mutexes(data);
 	free_pointers(data);
 }
@@ -33,14 +34,14 @@ void	destroy_mutexes(t_simulation *data)
 	pthread_mutex_destroy(&data->exit_lock);
 }
 
+void	destroy_last_meal_locks(t_simulation *data, unsigned int i)
+{
+	while (--i)
+		pthread_mutex_destroy(&data->info[i].last_meal_lock);
+}
+
 void	destroy_forks(t_simulation *data, unsigned int i)
 {
 	while (--i)
 		pthread_mutex_destroy(&data->info[i].left_fork);
-}
-
-void	free_p(void *ptr)
-{
-	if (ptr)
-		free(ptr);
 }
