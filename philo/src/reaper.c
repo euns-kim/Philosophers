@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/28 20:51:21 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/29 22:35:31 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 int	philos_join(t_simulation *data)
 {
 	unsigned int	i;
-	unsigned int	finish_cnt;
 
 	i = 0;
-	finish_cnt = 0;
 	while (i < data->set.num_philos)
 	{
 		if (pthread_join(data->philos[i], NULL) != 0)
@@ -26,16 +24,30 @@ int	philos_join(t_simulation *data)
 			printf("Error occurred while joining threads.\n");
 			return (1);
 		}
-		if (data->info[i].being == FINISHED)
-			finish_cnt += 1;
 		i++;
 	}
-	if (finish_cnt == data->set.num_mealtime)
-		data->running = false;
 	return (0);
 }
 
-void	check_if_dead(t_simulation *data)
+void	check_if_finished(t_simulation *data, bool *running)
+{
+	unsigned int	i;
+
+	i = 0;
+	while (i < data->set.num_philos)
+	{
+		pthread_mutex_lock(&data->finish_lock);
+		if (data->finish_cnt == data->set.num_philos)
+		{
+			*running = false;
+			break ;
+		}	
+		pthread_mutex_unlock(&data->finish_lock);
+		i++;
+	}
+}
+
+void	check_if_dead(t_simulation *data, bool *running)
 {
 	unsigned int	i;
 
@@ -53,7 +65,7 @@ void	check_if_dead(t_simulation *data)
 			printf("%lu %u died", time_passed(data->start_time), \
 			data->info[i].philo_id);
 			pthread_mutex_unlock(&data->print_lock);
-			data->running = false;
+			*running = false;
 			pthread_mutex_unlock(&data->info[i].last_meal_lock);
 			break ;
 		}
@@ -64,8 +76,15 @@ void	check_if_dead(t_simulation *data)
 
 int	reaper(t_simulation *data)
 {
-	data->running = true;
-	while (data->running)
-		check_if_dead(data);
+	bool	running;
+
+	running = true;
+	while (running)
+	{
+		check_if_dead(data, &running);
+		if (running == false)
+			break ;
+		check_if_finished(data, &running);
+	}	
 	return (0);
 }
