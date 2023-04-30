@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/29 22:35:31 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/30 18:29:45 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ void	check_if_dead(t_simulation *data, bool *running)
 	{
 		pthread_mutex_lock(&data->info[i].last_meal_lock);
 		if (data->info[i].last_meal != 0 \
-		&& (current_time_in_ms() - data->info[i].last_meal >= data->set.time_to_die))
+		&& (current_time_in_ms() - data->info[i].last_meal \
+		>= data->set.time_to_die))
 		{
 			pthread_mutex_lock(&data->exit_lock);
 			data->exit = true;

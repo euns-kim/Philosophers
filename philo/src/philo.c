@@ -111,8 +111,8 @@ int	main(int argc, char **argv)
 		return (free(data), free(data->info), 1);
 	if (data->set.num_mealtime == 0)
 		return (destroy_mutexes(data), free_pointers(data), 0);
-	// if (data->set.num_philos == 1)
-	// 	return (solo_simulation(data));
+	if (data->set.num_philos == 1)
+		return (solo_simulation(data));
 	if (personification(data))
 		return (destroy_mutexes(data), free_pointers(data), 1);
 	if (create_philos(data) || reaper(data) || philos_join(data))

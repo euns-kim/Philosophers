@@ -6,7 +6,7 @@
 #    By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/17 19:53:57 by eunskim           #+#    #+#              #
-#    Updated: 2023/04/23 20:22:12 by eunskim          ###   ########.fr        #
+#    Updated: 2023/04/30 18:41:43 by eunskim          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,11 +34,13 @@ SRC_DIR			:= src
 SRCS			:= $(addprefix $(SRC_DIR)/, \
 				philo.c \
 				parse.c \
-				individual.c \
+				routine.c \
+				act.c \
+				solo.c \
+				reaper.c \
 				time.c \
 				display.c \
 				utils.c \
-				reaper.c \
 				free.c)
 OBJS			:= $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:23:04 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/29 22:42:50 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/04/30 18:15:34 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	usage_printer(void)
 void	philo_printer(t_philo *info)
 {
 	pthread_mutex_lock(&info->data->exit_lock);
-	if (info->data->exit == true)
+	if (info->data->exit == true || info->set.time_to_die == 0)
 	{
 		pthread_mutex_unlock(&info->data->exit_lock);
 		return ;
