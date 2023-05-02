@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/02 18:48:38 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/02 20:47:53 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	check_if_dead(t_simulation *data, bool *running)
 			data->exit = true;
 			pthread_mutex_unlock(&data->exit_lock);
 			pthread_mutex_lock(&data->print_lock);
-			printf("%lu %u died", time_passed(data->start_time), \
+			printf("%lu %u died\n", time_passed(data->start_time), \
 			data->info[i].philo_id);
 			pthread_mutex_unlock(&data->print_lock);
 			*running = false;

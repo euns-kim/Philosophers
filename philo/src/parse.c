@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 21:05:03 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/29 21:19:48 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/02 20:52:04 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ int	parse_input(int argc, char **argv, t_input *set)
 	|| get_value_ms(&set->time_to_die, argv[2]) \
 	|| get_value_ms(&set->time_to_eat, argv[3]) \
 	|| get_value_ms(&set->time_to_sleep, argv[4]))
-		return (printf("Parsing failed."), 1);
+		return (printf("Parsing failed.\n"), 1);
 	if (set->num_philos == 0)
-		return (printf("Number of philosophers should be at least one."), 1);
+		return (printf("Number of philosophers should be at least one.\n"), 1);
 	set->num_mealtime = UINT_MAX;
 	if (argc == 6)
 	{
 		if (get_value_uint(&set->num_mealtime, argv[5]))
-			return (printf("Parsing failed."), 1);
+			return (printf("Parsing failed.\n"), 1);
 	}
 	return (0);
 }
