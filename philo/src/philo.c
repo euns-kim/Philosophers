@@ -97,25 +97,23 @@ int	init_mutexes(t_simulation *data)
 
 int	main(int argc, char **argv)
 {
-	t_simulation	*data;
+	t_simulation	data;
 
 	if (argc != 5 && argc != 6)
 		return (usage_printer(), 1);
-	data = ft_calloc(1, sizeof(t_simulation));
-	if (data == NULL)
+	ft_memset(&data, 0, sizeof(t_simulation));
+	if (parse_input(argc, argv, &data.set) || init_mutexes(&data))
+		return (1);
+	data.info = ft_calloc(data.set.num_philos, sizeof(t_philo));
+	if (data.info == NULL)
 		return (printf("Malloc failed.\n"), 1);
-	data->info = ft_calloc(data->set.num_philos, sizeof(t_philo));
-	if (data->info == NULL)
-		return (printf("Malloc failed.\n"), free(data), 1);
-	if (parse_input(argc, argv, &data->set) || init_mutexes(data))
-		return (free(data), free(data->info), 1);
-	if (data->set.num_mealtime == 0)
-		return (destroy_mutexes(data), free_pointers(data), 0);
-	if (data->set.num_philos == 1)
-		return (solo_simulation(data));
-	if (personification(data))
-		return (destroy_mutexes(data), free_pointers(data), 1);
-	if (create_philos(data) || reaper(data) || philos_join(data))
-		return (free_before_terminating(data), 1);
-	return (free_before_terminating(data), 0);
+	if (data.set.num_mealtime == 0)
+		return (destroy_mutexes(&data), free(data.info), 0);
+	if (data.set.num_philos == 1)
+		return (solo_simulation(&data));
+	if (personification(&data))
+		return (destroy_mutexes(&data), free_pointers(&data), 1);
+	if (create_philos(&data) || reaper(&data) || philos_join(&data))
+		return (free_before_terminating(&data), 1);
+	return (free_before_terminating(&data), 0);
 }

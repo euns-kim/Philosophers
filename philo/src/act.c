@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:40:25 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/30 18:41:08 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/02 20:26:57 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@ void	philo_thinking(t_philo *info)
 {
 	info->act = THINKING;
 	philo_printer(info);
+	if (info->last_meal != 0 && ((info->set.time_to_die \
+	- info->set.time_to_eat - info->set.time_to_sleep) \
+	> (current_time_in_ms() - info->last_meal) * 2 / 3))
+		sleep_exact((current_time_in_ms() - info->last_meal) * 2 / 3);
 	info->action = &philo_picking_up_forks;
 }
 

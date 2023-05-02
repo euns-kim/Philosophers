@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 15:38:42 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/28 16:42:09 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/02 17:45:03 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	free_pointers(t_simulation *data)
 {
 	free_p(data->philos);
 	free_p(data->info);
-	free_p(data);
 }
 
 void	destroy_mutexes(t_simulation *data)

@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/04/30 18:45:19 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/02 17:50:37 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <pthread.h>
 # include <limits.h>
 # include <sys/time.h>
+# include <stdint.h>
 
 typedef unsigned long		t_milliseconds;
 typedef struct s_simulation	t_simulation;
@@ -96,6 +97,7 @@ void			philo_putting_down_forks(t_philo *info);
 void			philo_sleeping_thinking(t_philo *info);
 
 int				solo_simulation(t_simulation *data);
+int				solo_personification(t_simulation *data);
 void			*solo_routine(void *arg);
 
 void			philo_printer(t_philo *info);
