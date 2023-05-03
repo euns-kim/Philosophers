@@ -6,11 +6,41 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/02 18:43:45 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/03 17:18:02 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	even_numbered_picking_up(t_philo *info)
+{
+	pthread_mutex_lock(info->right_fork);
+	pthread_mutex_lock(&info->data->exit_lock);
+	if (info->data->exit == true)
+	{
+		pthread_mutex_unlock(info->right_fork);
+		pthread_mutex_unlock(&info->data->exit_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&info->data->exit_lock);
+	pthread_mutex_lock(&info->left_fork);
+	return (0);
+}
+
+int	odd_numbered_picking_up(t_philo *info)
+{
+	pthread_mutex_lock(&info->left_fork);
+	pthread_mutex_lock(&info->data->exit_lock);
+	if (info->data->exit == true)
+	{
+		pthread_mutex_unlock(&info->left_fork);
+		pthread_mutex_unlock(&info->data->exit_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&info->data->exit_lock);
+	pthread_mutex_lock(info->right_fork);
+	return (0);
+}
 
 void	routine(t_philo *info)
 {
@@ -42,9 +72,9 @@ void	*start_routine(void *arg)
 	pthread_mutex_lock(&info->last_meal_lock);
 	info->last_meal = info->data->start_time;
 	pthread_mutex_unlock(&info->last_meal_lock);
-	info->action = &philo_thinking;
+	info->action = &philo_picking_up_forks;
 	if (info->philo_id % 2 == 1)
-		sleep_exact(5);
+		sleep_exact(2);
 	routine(info);
 	pthread_mutex_lock(&info->last_meal_lock);
 	info->last_meal = 0;

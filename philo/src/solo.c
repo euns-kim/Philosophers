@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 21:21:39 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/02 20:51:40 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/03 17:12:51 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,9 @@ void	*solo_routine(void *arg)
 		printf("%lu 1 died\n", time_passed(info->data->start_time));
 		return (NULL);
 	}
-	info->act = THINKING;
-	philo_printer(info);
+	philo_printer(info, "is thinking\n");
 	pthread_mutex_lock(&info->left_fork);
-	info->act = GOT_FORKS;
-	philo_printer(info);
+	philo_printer(info, "has taken a fork\n");
 	pthread_mutex_unlock(&info->left_fork);
 	info->being = DEAD;
 	printf("%lu 1 died\n", time_passed(info->data->start_time));

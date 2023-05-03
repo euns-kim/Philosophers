@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:40:25 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/02 20:26:57 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/03 17:29:21 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,17 @@
 
 void	philo_thinking(t_philo *info)
 {
-	info->act = THINKING;
-	philo_printer(info);
-	if (info->last_meal != 0 && ((info->set.time_to_die \
-	- info->set.time_to_eat - info->set.time_to_sleep) \
-	> (current_time_in_ms() - info->last_meal) * 2 / 3))
-		sleep_exact((current_time_in_ms() - info->last_meal) * 2 / 3);
+	philo_printer(info, "is thinking\n");
+	if ((info->set.time_to_die \
+	- info->set.time_to_eat - info->set.time_to_sleep) > 20)
+		sleep_exact((info->set.time_to_die \
+		- info->set.time_to_eat - info->set.time_to_sleep) * 2 / 3);
 	info->action = &philo_picking_up_forks;
 }
 
 void	philo_sleeping(t_philo *info)
 {
-	info->act = SLEEPING;
-	philo_printer(info);
+	philo_printer(info, "is sleeping\n");
 	sleep_exact(info->set.time_to_sleep);
 	info->action = &philo_thinking;
 }
@@ -47,11 +45,10 @@ void	philo_putting_down_forks(t_philo *info)
 
 void	philo_eating(t_philo *info)
 {
-	info->act = EATING;
-	philo_printer(info);
 	pthread_mutex_lock(&info->last_meal_lock);
 	info->last_meal = current_time_in_ms();
 	pthread_mutex_unlock(&info->last_meal_lock);
+	philo_printer(info, "is eating\n");
 	sleep_exact(info->set.time_to_eat);
 	info->mealtime_cnt++;
 	if (info->mealtime_cnt == info->set.num_mealtime)
@@ -69,16 +66,15 @@ void	philo_picking_up_forks(t_philo *info)
 {
 	if (info->philo_id % 2 == 1)
 	{
-		pthread_mutex_lock(&info->left_fork);
-		pthread_mutex_lock(info->right_fork);
+		if (odd_numbered_picking_up(info))
+			return ;
 	}
 	else
 	{
-		pthread_mutex_lock(info->right_fork);
-		pthread_mutex_lock(&info->left_fork);
+		if (even_numbered_picking_up(info))
+			return ;
 	}
-	info->act = GOT_FORKS;
-	philo_printer(info);
-	philo_printer(info);
+	philo_printer(info, "has taken a fork\n");
+	philo_printer(info, "has taken a fork\n");
 	info->action = &philo_eating;
 }

@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/02 20:47:53 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/03 17:10:20 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,12 @@ void	check_if_dead(t_simulation *data, bool *running)
 		&& (current_time_in_ms() - data->info[i].last_meal \
 		>= data->set.time_to_die))
 		{
+			pthread_mutex_unlock(&data->info[i].last_meal_lock);
 			pthread_mutex_lock(&data->exit_lock);
 			data->exit = true;
 			pthread_mutex_unlock(&data->exit_lock);
-			pthread_mutex_lock(&data->print_lock);
-			printf("%lu %u died\n", time_passed(data->start_time), \
-			data->info[i].philo_id);
-			pthread_mutex_unlock(&data->print_lock);
+			data->dead_philo_id = i + 1;
 			*running = false;
-			pthread_mutex_unlock(&data->info[i].last_meal_lock);
 			break ;
 		}
 		pthread_mutex_unlock(&data->info[i].last_meal_lock);
@@ -74,7 +71,14 @@ int	reaper(t_simulation *data)
 	{
 		check_if_dead(data, &running);
 		if (running == false)
+		{
+			sleep_exact(1);
+			pthread_mutex_lock(&data->print_lock);
+			printf("%lu %u died\n", \
+			time_passed(data->start_time), data->dead_philo_id);
+			pthread_mutex_unlock(&data->print_lock);
 			break ;
+		}
 		check_if_finished(data, &running);
 	}
 	return (0);
