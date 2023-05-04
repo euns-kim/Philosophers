@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:23:04 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/03 16:38:32 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/04 16:07:25 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ void	usage_printer(void)
 	printf("[number of mealtime (optional)]\n");
 }
 
+/* printer for philo action */
+/* if the simulation is meant to be ended, */
+/* no more action should be printed */
 void	philo_printer(t_philo *info, char *act)
 {
 	pthread_mutex_lock(&info->data->exit_lock);

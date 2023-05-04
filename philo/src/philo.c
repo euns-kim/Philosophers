@@ -12,6 +12,8 @@
 
 #include "philo.h"
 
+/* a funtion to create philos as threads */
+/* start lock is used to synchronize the starting time for every philo */
 int	create_philos(t_simulation *data)
 {
 	unsigned int	i;
@@ -41,6 +43,8 @@ int	create_philos(t_simulation *data)
 	return (0);
 }
 
+/* a function which saves all non-zero informaion including the forks */
+/* in each struct for each philo */
 int	personification(t_simulation *data)
 {
 	unsigned int	i;
@@ -70,6 +74,7 @@ int	personification(t_simulation *data)
 	return (0);
 }
 
+/* a function to initiate special mutexes*/
 int	init_mutexes(t_simulation *data)
 {
 	if (pthread_mutex_init(&data->print_lock, NULL) != 0)
@@ -94,6 +99,8 @@ int	init_mutexes(t_simulation *data)
 	}
 	return (0);
 }
+
+/* main function */
 
 int	main(int argc, char **argv)
 {

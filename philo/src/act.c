@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:40:25 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/03 17:29:21 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/04 15:39:25 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,21 +60,4 @@ void	philo_eating(t_philo *info)
 	}
 	philo_putting_down_forks(info);
 	info->action = &philo_sleeping;
-}
-
-void	philo_picking_up_forks(t_philo *info)
-{
-	if (info->philo_id % 2 == 1)
-	{
-		if (odd_numbered_picking_up(info))
-			return ;
-	}
-	else
-	{
-		if (even_numbered_picking_up(info))
-			return ;
-	}
-	philo_printer(info, "has taken a fork\n");
-	philo_printer(info, "has taken a fork\n");
-	info->action = &philo_eating;
 }

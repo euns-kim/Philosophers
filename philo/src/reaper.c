@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/03 17:10:20 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/04 15:29:30 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,11 @@ void	check_if_dead(t_simulation *data, bool *running)
 			pthread_mutex_lock(&data->exit_lock);
 			data->exit = true;
 			pthread_mutex_unlock(&data->exit_lock);
-			data->dead_philo_id = i + 1;
+			sleep_exact(2);
+			pthread_mutex_lock(&data->print_lock);
+			printf("%lu %u died\n", \
+			time_passed(data->start_time), data->info->philo_id);
+			pthread_mutex_unlock(&data->print_lock);
 			*running = false;
 			break ;
 		}
@@ -71,14 +75,7 @@ int	reaper(t_simulation *data)
 	{
 		check_if_dead(data, &running);
 		if (running == false)
-		{
-			sleep_exact(1);
-			pthread_mutex_lock(&data->print_lock);
-			printf("%lu %u died\n", \
-			time_passed(data->start_time), data->dead_philo_id);
-			pthread_mutex_unlock(&data->print_lock);
 			break ;
-		}
 		check_if_finished(data, &running);
 	}
 	return (0);

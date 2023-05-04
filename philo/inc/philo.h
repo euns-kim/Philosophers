@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/03 17:18:26 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/04 15:52:15 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@
 # include <pthread.h>
 # include <limits.h>
 # include <sys/time.h>
-# include <stdint.h>
 
 typedef unsigned long		t_milliseconds;
 typedef struct s_simulation	t_simulation;
 typedef struct s_philo		t_philo;
+
+/* enum representing philo's state of being */
 
 typedef enum e_state
 {
@@ -32,6 +33,8 @@ typedef enum e_state
 	DEAD,
 	FINISHED
 }	t_state;
+
+/* t_input saving the set conditions of simuation given by user input */
 
 typedef struct s_input
 {
@@ -41,6 +44,11 @@ typedef struct s_input
 	t_milliseconds	time_to_sleep;
 	unsigned int	num_mealtime;
 }	t_input;
+
+/* t_philo saving private info of each philo */
+/* this includes a mutex fork and a pointer to another fork */
+/* each philo has a last_meal_lock used when updating its last mealtime, */
+/* and when the reaper reads their last mealtime to detect any death incident */
 
 typedef struct s_philo
 {
@@ -56,6 +64,10 @@ typedef struct s_philo
 	t_input			set;
 }	t_philo;
 
+/* t_simulation saving all the needed data for the whole simulation */
+/* including a pointer to philo threads, a pointer to a t_philo array */
+/* and three extra mutex locks for starting, finishing and exiting */
+
 typedef struct s_simulation
 {
 	pthread_t		*philos;
@@ -69,49 +81,56 @@ typedef struct s_simulation
 	bool			exit;
 	pthread_mutex_t	exit_lock;
 	t_input			set;
-	unsigned int	dead_philo_id;
 }	t_simulation;
 
+/* parser */
 int				parse_input(int argc, char **argv, t_input *set);
 int				get_value_uint(unsigned int *num, const char *str);
 int				get_value_ms(t_milliseconds *time, const char *str);
 
+/* simulation initiator */
 int				personification(t_simulation *data);
 int				init_mutexes(t_simulation *data);
 int				create_philos(t_simulation *data);
 
+/* deadly routine of philos */
 void			*start_routine(void *arg);
 void			routine(t_philo *info);
 void			philo_thinking(t_philo *info);
 void			philo_picking_up_forks(t_philo *info);
-int				odd_numbered_picking_up(t_philo *info);
-int				even_numbered_picking_up(t_philo *info);
 void			philo_eating(t_philo *info);
 void			philo_putting_down_forks(t_philo *info);
-void			philo_sleeping_thinking(t_philo *info);
+void			philo_sleeping(t_philo *info);
+void			philo_thinking(t_philo *info);
 
+/* solo simulation for one and only philo */
 int				solo_simulation(t_simulation *data);
 int				solo_personification(t_simulation *data);
 void			*solo_routine(void *arg);
 
+/* printer */
 void			philo_printer(t_philo *info, char *act);
 void			usage_printer(void);
 
+/* time manager */
 t_milliseconds	current_time_in_ms(void);
 t_milliseconds	time_passed(t_milliseconds start_time);
 void			sleep_exact(t_milliseconds timeval);
 
+/* free and destroy */
 void			destroy_forks(t_simulation *data, unsigned int i);
 void			destroy_last_meal_locks(t_simulation *data, unsigned int i);
 void			destroy_mutexes(t_simulation *data);
 void			free_pointers(t_simulation *data);
 void			free_before_terminating(t_simulation *data);
 
+/* reaper */
 int				reaper(t_simulation *data);
 void			check_if_dead(t_simulation *data, bool *running);
 void			check_if_finished(t_simulation *data, bool *running);
 int				philos_join(t_simulation *data);
 
+/* utils */
 void			*ft_memset(void *b, int c, size_t len);
 void			*ft_calloc(size_t count, size_t size);
 int				ft_isdigit(int c);

@@ -6,12 +6,15 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 21:05:03 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/02 20:52:04 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/04 16:00:06 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/* a function which returns t_milliseconds value when successful */
+/* for successful parsing overflow shouldn't happen, */
+/* and string should not contain any character other than digits */
 int	get_value_ms(t_milliseconds *time, const char *str)
 {
 	*time = 0;
@@ -29,6 +32,9 @@ int	get_value_ms(t_milliseconds *time, const char *str)
 	return (0);
 }
 
+/* a function which returns uint value when successful */
+/* for successful parsing overflow shouldn't happen, */
+/* and string should not contain any character other than digits */
 int	get_value_uint(unsigned int *num, const char *str)
 {
 	*num = 0;
@@ -46,6 +52,7 @@ int	get_value_uint(unsigned int *num, const char *str)
 	return (0);
 }
 
+/* input parser */
 int	parse_input(int argc, char **argv, t_input *set)
 {
 	if (get_value_uint(&set->num_philos, argv[1]) \
