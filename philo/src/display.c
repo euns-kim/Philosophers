@@ -6,12 +6,13 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:23:04 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/04 16:07:25 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 15:27:30 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/* printer printng a usage guide */
 void	usage_printer(void)
 {
 	printf("Invalid arguments. Use as follows:\n");

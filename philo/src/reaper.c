@@ -6,12 +6,13 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/04 15:29:30 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 15:44:12 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/* a function which waits for the termination of all philo threads */
 int	philos_join(t_simulation *data)
 {
 	unsigned int	i;
@@ -29,6 +30,7 @@ int	philos_join(t_simulation *data)
 	return (0);
 }
 
+/* a function to terminate the reaper when all philos have finished the meal */
 void	check_if_finished(t_simulation *data, bool *running)
 {
 	pthread_mutex_lock(&data->finish_lock);
@@ -37,6 +39,13 @@ void	check_if_finished(t_simulation *data, bool *running)
 	pthread_mutex_unlock(&data->finish_lock);
 }
 
+/* a function which goes through the philo threads in a while loop, */
+/* checks if someone is meant to be dead. */
+/* means, the time passed since the last mealtime is equal, or exceeds time to die */
+/* when a death case is detected it sets the exit variable to true, */
+/* so that philos can know that the simulation should stop */
+/* it will also prints out the death message after waiting for 2 milliseconds, */
+/* break out of the while loop and terminate the reaper */
 void	check_if_dead(t_simulation *data, bool *running)
 {
 	unsigned int	i;
@@ -66,6 +75,8 @@ void	check_if_dead(t_simulation *data, bool *running)
 	}
 }
 
+/* a function which monitors philo threads to check */
+/* if the simulation should stop (a philo died or the meal has been finished) */
 int	reaper(t_simulation *data)
 {
 	bool	running;

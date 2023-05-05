@@ -6,12 +6,13 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 21:21:39 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/03 17:12:51 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 15:47:12 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/* a routine function for the solo thread */
 void	*solo_routine(void *arg)
 {
 	t_philo	*info;
@@ -32,6 +33,7 @@ void	*solo_routine(void *arg)
 	return (NULL);
 }
 
+/* a function which gives all needed data to one philo struct */
 int	solo_personification(t_simulation *data)
 {
 	data->info[0].philo_id = 1;
@@ -51,6 +53,7 @@ int	solo_personification(t_simulation *data)
 	return (0);
 }
 
+/* a function which initiates and ends a simulation for one philo */
 int	solo_simulation(t_simulation *data)
 {
 	if (solo_personification(data))

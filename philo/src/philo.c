@@ -101,7 +101,6 @@ int	init_mutexes(t_simulation *data)
 }
 
 /* main function */
-
 int	main(int argc, char **argv)
 {
 	t_simulation	data;

@@ -6,12 +6,16 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/04 15:38:42 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 16:06:27 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/* even numbered philos pick up the right fork first */
+/* this will prevent deadlock */
+/* if someone died before it picks up another */
+/* it will put down the fork again */
 static int	even_numbered_picking_up(t_philo *info)
 {
 	pthread_mutex_lock(info->right_fork);
@@ -27,6 +31,10 @@ static int	even_numbered_picking_up(t_philo *info)
 	return (0);
 }
 
+/* odd numbered philos pick up the left fork first */
+/* this will prevent deadlock */
+/* if someone died before it picks up another */
+/* it will put down the fork again */
 static int	odd_numbered_picking_up(t_philo *info)
 {
 	pthread_mutex_lock(&info->left_fork);
@@ -42,6 +50,7 @@ static int	odd_numbered_picking_up(t_philo *info)
 	return (0);
 }
 
+/* first action: picking up the forks */
 void	philo_picking_up_forks(t_philo *info)
 {
 	if (info->philo_id % 2 == 1)
@@ -59,6 +68,12 @@ void	philo_picking_up_forks(t_philo *info)
 	info->action = &philo_eating;
 }
 
+/* a function putting philos in a loop of actions */
+/* the function pointer action calls different actions each time */
+/* before any action, it checks if the simulation should stop */
+/* by checking the exit variable with the exit lock */
+/* if a philo has finished the meal (info->being == FINISHED), */
+/* it will go out of the loop as well */
 void	routine(t_philo *info)
 {
 	while (info->being == ALIVE)
@@ -77,6 +92,11 @@ void	routine(t_philo *info)
 	}
 }
 
+/* a routine function for philo threads, calling a while loop of actions */
+/* it will wait for the start lock to unlock before starting any action, */
+/* and update the last mealtime with the synchronized start time */
+/* if a philo is odd-numbered, one sleeps 2 milliseconds for better scheduling */
+/* before returning null the last mealtime will be set to 0 to avoid a wrong death detection */
 void	*start_routine(void *arg)
 {
 	t_philo	*info;
