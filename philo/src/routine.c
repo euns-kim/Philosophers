@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 16:27:11 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 19:30:39 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void	*start_routine(void *arg)
 	pthread_mutex_unlock(&info->last_meal_lock);
 	info->action = &philo_picking_up_forks;
 	if (info->philo_id % 2 == 1)
-		sleep_exact(2);
+		sleep_exact(2, info);
 	routine(info);
 	pthread_mutex_lock(&info->last_meal_lock);
 	info->last_meal = 0;

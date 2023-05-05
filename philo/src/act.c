@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:40:25 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 16:18:44 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 19:30:28 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	philo_thinking(t_philo *info)
 	if ((info->set.time_to_die \
 	- info->set.time_to_eat - info->set.time_to_sleep) > 20)
 		sleep_exact((info->set.time_to_die \
-		- info->set.time_to_eat - info->set.time_to_sleep) * 2 / 3);
+		- info->set.time_to_eat - info->set.time_to_sleep) * 2 / 3, info);
 	info->action = &philo_picking_up_forks;
 }
 
@@ -28,7 +28,7 @@ void	philo_thinking(t_philo *info)
 void	philo_sleeping(t_philo *info)
 {
 	philo_printer(info, "is sleeping\n");
-	sleep_exact(info->set.time_to_sleep);
+	sleep_exact(info->set.time_to_sleep, info);
 	info->action = &philo_thinking;
 }
 
@@ -60,7 +60,7 @@ void	philo_eating(t_philo *info)
 	info->last_meal = current_time_in_ms();
 	pthread_mutex_unlock(&info->last_meal_lock);
 	philo_printer(info, "is eating\n");
-	sleep_exact(info->set.time_to_eat);
+	sleep_exact(info->set.time_to_eat, info);
 	info->mealtime_cnt++;
 	if (info->mealtime_cnt == info->set.num_mealtime)
 	{

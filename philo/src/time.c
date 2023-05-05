@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:19:22 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 15:31:50 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 19:32:29 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,20 @@ t_milliseconds	time_passed(t_milliseconds start_time)
 }
 
 /* a substitute function for usleep to sleep more exact */
-void	sleep_exact(t_milliseconds timeval)
+void	sleep_exact(t_milliseconds timeval, t_philo *info)
 {
 	t_milliseconds	start_time;
 
 	start_time = current_time_in_ms();
 	while (time_passed(start_time) <= timeval)
-		usleep(100);
+	{
+		pthread_mutex_lock(&info->data->exit_lock);
+		if (info->data->exit == true)
+		{
+			pthread_mutex_unlock(&info->data->exit_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&info->data->exit_lock);
+		usleep(300);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 17:45:41 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 19:31:27 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void			usage_printer(void);
 /* time manager */
 t_milliseconds	current_time_in_ms(void);
 t_milliseconds	time_passed(t_milliseconds start_time);
-void			sleep_exact(t_milliseconds timeval);
+void			sleep_exact(t_milliseconds timeval, t_philo *info);
 
 /* free and destroy */
 void			destroy_forks(t_simulation *data, unsigned int i);
