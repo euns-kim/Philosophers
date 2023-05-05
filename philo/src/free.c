@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 15:38:42 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 15:29:50 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 17:45:25 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	free_pointers(t_simulation *data)
 	free_p(data->info);
 }
 
-/* a function which destroys three special mutexes */
+/* a function which destroys the special mutexes */
 void	destroy_mutexes(t_simulation *data)
 {
 	pthread_mutex_destroy(&data->print_lock);
