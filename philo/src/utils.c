@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 14:01:39 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 15:35:46 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 16:27:28 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	ft_isdigit(int c)
 	return (c >= '0' && c <= '9');
 }
 
-/* free function that has a protection against freeing null */
+/* free function that has a protection against freeing NULL */
 void	free_p(void *ptr)
 {
 	if (ptr)

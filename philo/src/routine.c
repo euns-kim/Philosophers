@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 14:48:06 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 16:06:27 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 16:27:11 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,9 @@ void	routine(t_philo *info)
 /* a routine function for philo threads, calling a while loop of actions */
 /* it will wait for the start lock to unlock before starting any action, */
 /* and update the last mealtime with the synchronized start time */
-/* if a philo is odd-numbered, one sleeps 2 milliseconds for better scheduling */
-/* before returning null the last mealtime will be set to 0 to avoid a wrong death detection */
+/* odd numbered philos sleep 2 milliseconds for better scheduling */
+/* the last mealtime will be set to 0 before returning NULL */
+/* to avoid a wrong death detection */
 void	*start_routine(void *arg)
 {
 	t_philo	*info;

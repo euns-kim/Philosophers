@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 15:44:12 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/05 16:25:58 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ void	check_if_finished(t_simulation *data, bool *running)
 }
 
 /* a function which goes through the philo threads in a while loop, */
-/* checks if someone is meant to be dead. */
-/* means, the time passed since the last mealtime is equal, or exceeds time to die */
+/* checks if someone is meant to be dead, means, */
+/* the time passed since the last mealtime is equal, or exceeds time to die */
 /* when a death case is detected it sets the exit variable to true, */
 /* so that philos can know that the simulation should stop */
-/* it will also prints out the death message after waiting for 2 milliseconds, */
+/* it will also prints out the death message after waiting for 2 ms, */
 /* break out of the while loop and terminate the reaper */
 void	check_if_dead(t_simulation *data, bool *running)
 {
