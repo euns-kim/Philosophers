@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 19:31:27 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/06 14:41:23 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void			free_before_terminating(t_simulation *data);
 int				reaper(t_simulation *data);
 void			check_if_dead(t_simulation *data, bool *running);
 void			check_if_finished(t_simulation *data, bool *running);
-int				philos_join(t_simulation *data);
+int				philos_join(t_simulation *data, unsigned int num_threads);
 
 /* utils */
 void			*ft_memset(void *b, int c, size_t len);

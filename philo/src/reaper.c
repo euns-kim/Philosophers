@@ -6,19 +6,19 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/05 19:31:49 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/06 14:41:12 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /* a function which waits for the termination of all philo threads */
-int	philos_join(t_simulation *data)
+int	philos_join(t_simulation *data, unsigned int num_threads)
 {
 	unsigned int	i;
 
 	i = 0;
-	while (i < data->set.num_philos)
+	while (i < num_threads)
 	{
 		if (pthread_join(data->philos[i], NULL) != 0)
 		{

@@ -21,10 +21,7 @@ int	create_philos(t_simulation *data)
 	i = 0;
 	data->philos = malloc(data->set.num_philos * sizeof(pthread_t));
 	if (data->philos == NULL)
-	{
-		printf("Malloc failed.\n");
-		return (1);
-	}
+		return (printf("Malloc failed.\n"), 1);
 	pthread_mutex_lock(&data->start_lock);
 	while (i < data->set.num_philos)
 	{
@@ -33,6 +30,7 @@ int	create_philos(t_simulation *data)
 		{
 			printf("Error occurred while creating threads.\n");
 			pthread_mutex_unlock(&data->start_lock);
+			philos_join(data, i);
 			return (1);
 		}
 		i++;
@@ -119,7 +117,8 @@ int	main(int argc, char **argv)
 		return (solo_simulation(&data));
 	if (personification(&data))
 		return (destroy_mutexes(&data), free_pointers(&data), 1);
-	if (create_philos(&data) || reaper(&data) || philos_join(&data))
+	if (create_philos(&data) || reaper(&data) \
+	|| philos_join(&data, data.set.num_philos))
 		return (free_before_terminating(&data), 1);
 	return (free_before_terminating(&data), 0);
 }
