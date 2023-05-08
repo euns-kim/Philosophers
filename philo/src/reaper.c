@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 17:52:13 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/06 14:41:12 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/08 17:16:34 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	check_if_finished(t_simulation *data, bool *running)
 /* the time passed since the last mealtime is equal, or exceeds time to die */
 /* when a death case is detected it sets the exit variable to true, */
 /* so that philos can know that the simulation should stop */
-/* it will also prints out the death message after waiting for 2 ms, */
+/* it will also prints out the death message, */
 /* break out of the while loop and terminate the reaper */
 void	check_if_dead(t_simulation *data, bool *running)
 {
@@ -62,7 +62,6 @@ void	check_if_dead(t_simulation *data, bool *running)
 			pthread_mutex_lock(&data->exit_lock);
 			data->exit = true;
 			pthread_mutex_unlock(&data->exit_lock);
-			sleep_exact(2, &data->info[i]);
 			pthread_mutex_lock(&data->print_lock);
 			printf("%lu %u died\n", \
 			time_passed(data->start_time), data->info->philo_id);

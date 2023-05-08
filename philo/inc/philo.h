@@ -6,7 +6,7 @@
 /*   By: eunskim <eunskim@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 19:08:43 by eunskim           #+#    #+#             */
-/*   Updated: 2023/05/06 14:41:23 by eunskim          ###   ########.fr       */
+/*   Updated: 2023/05/08 17:08:12 by eunskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_philo
 
 /* t_simulation saving all the needed data for the whole simulation */
 /* including a pointer to philo threads, a pointer to a t_philo array */
-/* and four extra mutex locks for starting, finishing and exiting */
+/* and four extra mutex locks for starting, printing, finishing and exiting */
 typedef struct s_simulation
 {
 	pthread_t		*philos;

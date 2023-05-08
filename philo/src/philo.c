@@ -72,7 +72,7 @@ int	personification(t_simulation *data)
 	return (0);
 }
 
-/* a function to initiate special mutexes*/
+/* a function to initiate special mutexes */
 int	init_mutexes(t_simulation *data)
 {
 	if (pthread_mutex_init(&data->print_lock, NULL) != 0)
